@@ -5,6 +5,12 @@
  * Versão: 1.0
  *************************************************************************************/
 
+//Import do arquivo de mensagens e status code do projeto
+const message = require('../../modulo/config.js')
+
+//Import do arquivo para realizar o CRUD de dados no Banco de dados
+const filmeDAO = require('../../model/DAO/filme.js')
+
 //Função para tratar a inserção de um novo filme no DAO
 const inserirFilme = async function(filme){
     if (filme.nome            == ''        || filme.nome            == undefined || filme.nome            == null || filme.nome.length            > 80 || 
@@ -15,8 +21,15 @@ const inserirFilme = async function(filme){
         filme.link_trailer    == undefined || filme.link_trailer.length > 200 
     )
     {
-        response.status_code = 400
-        response.message = 'Os atributos informados na requisição não estão de acordo. Ex: Campos obrigatórios, Quantidade de caracteries...'
+       return message.ERROR_REQUIRED_FIELDS // 400
+    }else{
+        //Chama a função para inserir no banco de dados e aguarda o retorno da função
+        let resultFilme = await filmeDAO.insertFilme(filme)
+
+        if(resultFilme)
+            return message.SUCESS_CREATED_ITEM //201
+        else
+            return message.ERROR_INTERNAL_SERVER //500
     }
         
     
@@ -40,4 +53,12 @@ const listarFilme = async function(){
 //Função para tratar o retorno de um filme filtrando pelo ID do DAO
 const buscarFilme = async function(){
     
+}
+
+module.exports = {
+    inserirFilme,
+    atualizarFilme,
+    excluirFilme,
+    listarFilme,
+    buscarFilme
 }

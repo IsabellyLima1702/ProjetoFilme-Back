@@ -13,3 +13,22 @@
  *              prisma          npm install prisma --save (para fazer a conexão com o BD)
  *              prisma/client   npm install @prisma/client --save (rodar os scripts SQL)
  ********************************************************************************************/
+
+const express    = require('express')
+const cors       = require('cors')
+const bodyParser = require('body-parser')
+const {request}  = require('http')
+
+const app = express()
+
+app.use((request, response, next) =>{
+
+    response.header('Acess-Control-Allow-Origin', '*')
+
+    response.header('Acess-Control-Allow-Methods', 'GET')
+
+    app.use(cors())
+
+    next()
+})
+
