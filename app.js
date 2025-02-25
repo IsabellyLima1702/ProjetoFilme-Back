@@ -12,23 +12,57 @@
  *          Para criar a integração com o Banco de Dados precisamos instalar:
  *              prisma          npm install prisma --save (para fazer a conexão com o BD)
  *              prisma/client   npm install @prisma/client --save (rodar os scripts SQL)
+ *              
+ *          Após a instalação do prisma e do prisma client, devemos:
+ *              npx prisma init
+ *              n
  ********************************************************************************************/
 
 const express    = require('express')
 const cors       = require('cors')
 const bodyParser = require('body-parser')
-const {request}  = require('http')
 
+const bodyParserJSON = bodyParser.json()
 const app = express()
 
 app.use((request, response, next) =>{
 
     response.header('Acess-Control-Allow-Origin', '*')
 
-    response.header('Acess-Control-Allow-Methods', 'GET')
+    response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTION')
 
     app.use(cors())
 
     next()
 })
 
+//Import do Controller
+const controllerFilme = require('./controller/filme/controllerFilme')
+
+app.post('/v1/controle-filmes/filme', cors(), bodyParserJSON, async function(request, response){
+
+    //Para receber o que tem dentro do envelope
+    //Recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //Recebe do body da aquisição os dados encaminhados
+    let dadosBody = request.body
+    let resulFilme = await controllerFilme.inserirFilme(dadosBody, contentType)
+
+    response.status(resulFilme.status_code)
+    response.json(resulFilme)
+})
+
+app.get('/v1/controle-filmes/filme', cors(), async function(request, response){
+    //Chama a função para retornar filmes
+    let resultFilme = await controllerFilme.listarFilme()
+
+    response.status(resultFilme.status_code)
+    response.json(resultFilme)
+})
+
+app.listen('8080', function(){
+    console.log('API funcionando e aguardando requisições...')
+})
+
+ 
