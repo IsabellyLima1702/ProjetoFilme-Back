@@ -61,6 +61,24 @@ app.get('/v1/controle-filmes/filme', cors(), async function(request, response){
     response.json(resultFilme)
 })
 
+app.get('/v1/controle-filmes/id', cors(), async function(request, response){
+
+    let resulId = request.params
+
+    let dadosId = await controllerFilme.buscarFilme(resulId)
+
+    response.status(dadosId.status_code)
+    response.json(dadosId)
+})
+
+app.delete('/v1/controle-filmes/id', cors(), async function(request, response){
+
+    let resultFilme = await controllerFilme.excluirFilme()
+
+    response.status(resultFilme.status_code)
+    response.json(resultFilme)
+})
+
 app.listen('8080', function(){
     console.log('API funcionando e aguardando requisições...')
 })
