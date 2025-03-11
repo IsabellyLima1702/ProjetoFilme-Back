@@ -55,8 +55,19 @@ const updateFilme = async function(){
 }
 
 //Função para excluir um filme existente
-const deleteFilme = async function(){
-    
+const deleteFilme = async function(id){
+    try {
+        let sql = `delete from tbl_filme where id = ${id}`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result)
+            return true
+        else
+        return false
+    } catch (error) {
+        return false
+    }
 }
 
 //Função para retornar todos os filmes existentes
@@ -80,7 +91,19 @@ const selectAllFilme = async function(){
 }
 
 //Função para buscar um filme pelo ID
-const selectByIdFilme = async function(){
+const selectByIdFilme = async function(id){
+    try {
+        let sql = `select * from tbl_filme where id = ${id}`
+
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if(result)
+            return result
+        else
+        return false
+    } catch (error) {
+        return false
+    }
     
 }
 

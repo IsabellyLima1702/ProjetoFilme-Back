@@ -61,17 +61,17 @@ app.get('/v1/controle-filmes/filme', cors(), async function(request, response){
     response.json(resultFilme)
 })
 
-app.get('/v1/controle-filmes/id', cors(), async function(request, response){
+app.get('/v1/controle-filmes/filme/:id', cors(), async function(request, response){
+    //Recebe o ID da requisição
+    let idFilme = request.params.id
 
-    let resulId = request.params
+    let resultFilme = await controllerFilme.buscarFilme(idFilme)
 
-    let dadosId = await controllerFilme.buscarFilme(resulId)
-
-    response.status(dadosId.status_code)
-    response.json(dadosId)
+    response.status(resultFilme.status_code)
+    response.json(resultFilme)
 })
 
-app.delete('/v1/controle-filmes/id', cors(), async function(request, response){
+app.delete('/v1/controle-filmes/filme/:id', cors(), async function(request, response){
 
     let resultFilme = await controllerFilme.excluirFilme()
 

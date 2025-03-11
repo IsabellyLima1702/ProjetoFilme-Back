@@ -60,15 +60,15 @@ const listarFilme = async function(){
         //Objeto do tipo JSON
         let dadosFilme = {}
         //Função para retornar os filmes cadastrados
-        let resulFilme = await filmeDAO.selectAllFilme()
+        let resultFilme = await filmeDAO.selectAllFilme()
 
-        if(resulFilme != false){
-            if(resulFilme.length > 0){
+        if(resultFilme != false || typeof(resultFilme) == 'object'){
+            if(resultFilme.length > 0){
                 //Criando um JSON de retorno de dados para a API
                 dadosFilme.status = true
                 dadosFilme.status_code = 200
-                dadosFilme.items = resulFilme.length
-                dadosFilme.films = resulFilme
+                dadosFilme.items = resultFilme.length
+                dadosFilme.films = resultFilme
 
                 return dadosFilme
             }else{
@@ -83,8 +83,33 @@ const listarFilme = async function(){
 }
 
 //Função para tratar o retorno de um filme filtrando pelo ID do DAO
-const buscarFilme = async function(){
-    
+const buscarFilme = async function(id){
+    try {
+        if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
+            return message.ERROR_REQUIRED_FIELDS //400
+        }else{
+            dadosFilme = {}
+
+            let resultFilme = await filmeDAO.selectByIdFilme(parseInt(id))
+            console.log(resultFilme)
+            if(resultFilme != false || typeof(resultFilme) == 'object'){
+                if(resultFilme.length > 0){
+                    //Criando um JSON de retorno de dados para a API
+                    dadosFilme.status = true
+                    dadosFilme.status_code = 200
+                    dadosFilme.films = resultFilme
+
+                    return dadosFilme //200
+                }else{
+                    return message.ERROR_NOT_FOUND //404
+                }
+            }else{
+                return message.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
+    }
 }
 
 module.exports = {
