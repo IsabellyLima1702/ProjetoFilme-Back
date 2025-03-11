@@ -81,6 +81,21 @@ app.delete('/v1/controle-filmes/filme/:id', cors(), async function(request, resp
     response.json(resultFilme)
 })
 
+//BodyParserJson é para garantir que eu vou receber os dados em Json
+app.put('/v1/controle-filmes/filme/:id', cors(), bodyParserJSON, async function(request, response){
+    
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+    //Recebe o ID da requisição
+    let idFilme = request.params.id
+    //Recebe os dados da requisição
+    let dadosBody = request.body
+
+    let resultFilme = await controllerFilme.atualizarFilme(idFilme, dadosBody, contentType)
+
+    response.status(resultFilme.status_code)
+    response.json(resultFilme)
+})
 app.listen('8080', function(){
     console.log('API funcionando e aguardando requisições...')
 })

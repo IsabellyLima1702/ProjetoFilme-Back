@@ -45,9 +45,9 @@ const inserirFilme = async function(filme, contentType){
 }
 
 //Função para tratar a atualização de um filme no DAO
-const atualizarFilme = async function(){
+const atualizarFilme = async function(id, filme, contentType){
     try {
-        if(String(contentType).toLocaleLowerCase() == 'application/json')
+        if(String(contentType).toLowerCase() == 'application/json')
             {
     
                 if (id                    == ''        || id                    == undefined || id                    == null || isNaN(id) ||               id <=0 ||              
