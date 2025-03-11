@@ -50,8 +50,26 @@ const insertFilme = async function(filme){
 }
 
 //Função para atualizar um filme existente
-const updateFilme = async function(){
+const updateFilme = async function(filme){
+    try {
+        let sql = `update tbl_filme set     nome            = '${filme.nome}',
+                                            duracao         = '${filme.duracao}',
+                                            sinopse         = '${filme.sinopse}',
+                                            data_lancamento = '${filme.data_lancamento}',
+                                            foto_capa       = '${filme.foto_capa}',
+                                            link_trailer    = '${filme.link_trailer}'
+                                where id = ${filme.id}
+                                `
 
+        let resultFilme = await prisma.$executeRawUnsafe(sql)
+
+        if(resultFilme)
+            return true
+        else
+          return false
+    } catch (error) {
+        return false
+    }
 }
 
 //Função para excluir um filme existente

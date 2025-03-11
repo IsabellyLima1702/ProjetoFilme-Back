@@ -73,7 +73,9 @@ app.get('/v1/controle-filmes/filme/:id', cors(), async function(request, respons
 
 app.delete('/v1/controle-filmes/filme/:id', cors(), async function(request, response){
 
-    let resultFilme = await controllerFilme.excluirFilme()
+    let idFilme = request.params.id
+
+    let resultFilme = await controllerFilme.excluirFilme(idFilme)
 
     response.status(resultFilme.status_code)
     response.json(resultFilme)
