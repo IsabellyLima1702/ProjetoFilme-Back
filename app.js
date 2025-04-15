@@ -96,8 +96,33 @@ app.put('/v1/controle-filmes/filme/:id', cors(), bodyParserJSON, async function(
     response.status(resultFilme.status_code)
     response.json(resultFilme)
 })
-app.listen('8080', function(){
-    console.log('API funcionando e aguardando requisições...')
+
+app.post('/v1/controle-filmes/generos', cors(), bodyParserJSON, async function(request, response){
+
+    //Para receber o que tem dentro do envelope
+    //Recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //Recebe do body da aquisição os dados encaminhados
+    let dadosBody = request.body
+    let resulGenero = await controllerFilme.inserirGenero(dadosBody, contentType)
+
+    response.status(resulGenero.status_code)
+    response.json(resulGenero)
 })
 
- 
+app.put('/v1/controle-filmes/genero/:id', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let idGenero = request.params.id
+    let dadosBody = request.body
+
+    let resultGenero = await controllerFilme.atualizarGenero(idGenero, dadosBody, contentType)
+    response.status(resultGenero.status_code)
+    response.json(resultGenero)
+    
+})
+
+app.listen('8080', function(){
+    console.log('API funcionando e aguardando requisições...')
+
+})
