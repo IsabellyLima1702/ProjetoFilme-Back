@@ -166,6 +166,21 @@ const updateGenero = async function(genero){
     }
 }
 
+const deleteGenero = async function(id){
+    try {
+        let sql = `delete from tbl_genero where id = ${id}`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result)
+            return true
+        else
+        return false
+    } catch (error) {
+        return false
+    }
+}
+
 const selectByIdGenero = async function(id){
     try {
         let sql = `select * from tbl_genero where id = ${id}`
@@ -190,5 +205,6 @@ module.exports = {
     selectByIdFilme,
     insertGenero,
     updateGenero,
+    deleteGenero,
     selectByIdGenero
 }

@@ -215,8 +215,8 @@ const atualizarGenero = async function(id, genero, contentType){
         if(String(contentType).toLowerCase() == 'application/json')
             {
     
-                if (id                    == ''        || id                    == undefined || id                    == null || isNaN(id) ||               id <=0 ||              
-                    genero.nome           == ''        || genero.nome           == undefined || genero.nome           == null || genero.nome.length            < 30 
+                if (id             == ''  || id             == undefined || id            == null || isNaN(id) ||         id <=0 ||              
+                    genero.nome    == ''  || genero.nome    == undefined || genero.nome   == null || genero.nome.length   < 30 
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
@@ -252,6 +252,38 @@ const atualizarGenero = async function(id, genero, contentType){
     }           
 }
 
+const excluirGenero = async function(id){
+    try {
+       if(id == '' || id == undefined|| id == null || isNaN(id) || id <=0){
+        return message.ERROR_REQUIRED_FIELDS //400
+       }else{
+
+            //Função que verifica se o ID existe no Banco de Dados
+            let resultGenero= await filmeDAO.selectByIdGenero(parseInt(id))
+
+            if(resultGenero != false || typeof(resultGenero) == 'object'){
+                //Se existir, faremos o delete
+                if(resultGenero.length > 0){
+                    //delete
+                    let result = await filmeDAO.deleteGenero(parseInt(id))
+
+                    if(result){
+                        return message.SUCESS_DELETED_ITEM //200
+                    }else{
+                        return message.ERROR_INTERNAL_SERVER_MODEL //500
+                    }
+                }else{
+                    return message.ERROR_NOT_FOUND //404
+                }
+            }else{
+                return message.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
 module.exports = {
     inserirFilme,
     atualizarFilme,
@@ -259,5 +291,6 @@ module.exports = {
     listarFilme,
     buscarFilme,
     inserirGenero,
-    atualizarGenero
+    atualizarGenero,
+    excluirGenero
 }

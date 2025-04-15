@@ -122,6 +122,16 @@ app.put('/v1/controle-filmes/genero/:id', cors(), bodyParserJSON, async function
     
 })
 
+app.delete('/v1/controle-filmes/genero/:id', cors(), async function(request, response){
+
+    let idGenero = request.params.id
+
+    let resultGenero = await controllerFilme.excluirGenero(idGenero)
+
+    response.status(resultGenero.status_code)
+    response.json(resultGenero)
+})
+
 app.listen('8080', function(){
     console.log('API funcionando e aguardando requisições...')
 
