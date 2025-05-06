@@ -12,6 +12,7 @@ const message = require('../../modulo/config.js')
 const filmeDAO = require('../../model/DAO/filme.js')
 
 const controllerClassificacao = require('../../controller/classificacao/controllerClassificacao.js')
+const controllerIdiomas = require('../idioma/controllerIdioma.js')
 
 //Função para tratar a inserção de um novo filme no DAO
 const inserirFilme = async function(filme, contentType){
@@ -20,12 +21,15 @@ const inserirFilme = async function(filme, contentType){
         if(String(contentType).toLocaleLowerCase() == 'application/json')
         {
 
-            if (filme.nome            == ''        || filme.nome            == undefined || filme.nome            == null || filme.nome.length            > 80 || 
-                filme.duracao         == ''        || filme.duracao         == undefined || filme.duracao         == null || filme.duracao.length         > 5  ||
-                filme.sinopse         == ''        || filme.sinopse         == undefined || filme.sinopse         == null ||
-                filme.data_lancamento == ''        || filme.data_lancamento == undefined || filme.data_lancamento == null || filme.data_lancamento.length > 10 ||
-                filme.foto_capa       == undefined || filme.foto_capa.length    > 200    ||
-                filme.link_trailer    == undefined || filme.link_trailer.length > 200 
+            if (filme.nome              == ''        || filme.nome              == undefined   || filme.nome            == null || filme.nome.length            > 80 || 
+                filme.duracao           == ''        || filme.duracao           == undefined   || filme.duracao         == null || filme.duracao.length         > 5  ||
+                filme.sinopse           == ''        || filme.sinopse           == undefined   || filme.sinopse         == null ||
+                filme.data_lancamento   == ''        || filme.data_lancamento   == undefined   || filme.data_lancamento == null || filme.data_lancamento.length > 10 ||
+                filme.foto_capa         == undefined || filme.foto_capa.length    > 200        ||
+                filme.link_trailer      == undefined || filme.link_trailer.length > 200        ||
+                filme.id_classificacao  == ''        || filme.id_classificacao  == undefined   ||
+                filme.id_idioma         == ''        || filme.id_idioma         == undefined
+
             )
             {
                 return message.ERROR_REQUIRED_FIELDS //400
@@ -53,13 +57,15 @@ const atualizarFilme = async function(id, filme, contentType){
         if(String(contentType).toLowerCase() == 'application/json')
             {
     
-                if (id                    == ''        || id                    == undefined || id                    == null || isNaN(id) ||               id <=0 ||              
-                    filme.nome            == ''        || filme.nome            == undefined || filme.nome            == null || filme.nome.length            > 80 || 
-                    filme.duracao         == ''        || filme.duracao         == undefined || filme.duracao         == null || filme.duracao.length         > 5  ||
-                    filme.sinopse         == ''        || filme.sinopse         == undefined || filme.sinopse         == null ||
-                    filme.data_lancamento == ''        || filme.data_lancamento == undefined || filme.data_lancamento == null || filme.data_lancamento.length > 10 ||
-                    filme.foto_capa       == undefined || filme.foto_capa.length    > 200    ||
-                    filme.link_trailer    == undefined || filme.link_trailer.length > 200 
+                if (id                    == ''        || id                           == undefined || id                    == null || isNaN(id) ||               id <=0 ||              
+                    filme.nome            == ''        || filme.nome                   == undefined || filme.nome            == null || filme.nome.length            > 80 || 
+                    filme.duracao         == ''        || filme.duracao                == undefined || filme.duracao         == null || filme.duracao.length         > 5  ||
+                    filme.sinopse         == ''        || filme.sinopse                == undefined || filme.sinopse         == null ||
+                    filme.data_lancamento == ''        || filme.data_lancamento        == undefined || filme.data_lancamento == null || filme.data_lancamento.length > 10 ||
+                    filme.foto_capa       == undefined || filme.foto_capa.length    > 200           ||
+                    filme.link_trailer    == undefined || filme.link_trailer.length > 200           ||
+                    filme.id_classificacao== ''        || filme.id_classificacao  == undefined      ||
+                    filme.id_idioma       == ''        || filme.id_idioma         == undefined
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
@@ -147,10 +153,13 @@ const listarFilme = async function(){
 
                 for(const itemFilme of resultFilme){
                     let dadosClassificacao = await controllerClassificacao.buscarClassificacao(itemFilme.id_classificacao)
+                    let dadosIdioma = await controllerIdiomas.buscarIdioma(itemFilme.id_idioma)
 
                     itemFilme.classificacao = dadosClassificacao.classificacao
+                    itemFilme.idioma = dadosIdioma.idioma
 
                     delete itemFilme.id_classificacao
+                    delete itemFilme.id_idioma
 
                     arrayFilmes.push(itemFilme)
                 }
@@ -189,10 +198,13 @@ const buscarFilme = async function(id){
 
                     for(const itemFilme of resultFilme){
                         let dadosClassificacao = await controllerClassificacao.buscarClassificacao(itemFilme.id_classificacao)
+                        let dadosIdioma = await controllerIdiomas.buscarIdioma(itemFilme.id_idioma)
     
                         itemFilme.classificacao = dadosClassificacao.classificacao
+                        itemFilme.idioma = dadosIdioma.idioma
     
                         delete itemFilme.id_classificacao
+                        delete itemFilme.id_idioma
     
                         arrayFilmes.push(itemFilme)
                     }
