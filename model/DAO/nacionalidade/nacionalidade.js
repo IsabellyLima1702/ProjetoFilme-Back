@@ -12,27 +12,18 @@ const{ PrismaClient } = require('@prisma/client')
 
 //CADA FUNÇÃO REPRESENTA UMA AÇÃO NO BANCO
 
-//Função para inserir um novo filme
-const insertFilme = async function(filme){
+const insertNacionalidade = async function(nacionalidade){
     //O trycach é necessário para mostrar mensagem de erro ao usuário e não no terminal do desenvolvedor
     //com o console abaixo do (error), o erro aparece tanto para o usuário quanto para o desenvolvedor
     try {
 
-        let sql = `insert into tbl_filme  ( nome,
-                                            duracao,
-                                            sinopse,
-                                            data_lancamento,
-                                            foto_capa,
-                                            link_trailer
+        let sql = `insert into tbl_nacionalidade  ( nome
+
                                         )
                                             values
                                         (
-                                            '${filme.nome}',
-                                            '${filme.duracao}',
-                                            '${filme.sinopse}',
-                                            '${filme.data_lancamento}',
-                                            '${filme.foto_capa}',
-                                            '${filme.link_trailer}'
+                                            '${nacionalidade.nome}'
+
                                             )`
         //O awai é fundamental para ter comunicação com o BD
         //executa o scriptSQL no Banco de Dados e aguarda o retorno do BD para saber se deu certo
@@ -44,26 +35,23 @@ const insertFilme = async function(filme){
         else
             return false
     } catch (error) {
+        console.log(error)
         return false
     }
 
 }
 
 //Função para atualizar um filme existente
-const updateFilme = async function(filme){
+const updateNacionalidade = async function(nacionalidade){
     try {
-        let sql = `update tbl_filme set     nome            = '${filme.nome}',
-                                            duracao         = '${filme.duracao}',
-                                            sinopse         = '${filme.sinopse}',
-                                            data_lancamento = '${filme.data_lancamento}',
-                                            foto_capa       = '${filme.foto_capa}',
-                                            link_trailer    = '${filme.link_trailer}'
-                                where id = ${filme.id}
+        let sql = `update tbl_nacionalidade set   nome     = '${nacionalidade.nome}'
+                                            
+                                where id = ${nacionalidade.id}
                                 `
 
-        let resultFilme = await prisma.$executeRawUnsafe(sql)
+        let resultNacionalidade = await prisma.$executeRawUnsafe(sql)
 
-        if(resultFilme)
+        if(resultNacionalidade)
             return true
         else
           return false
@@ -73,9 +61,9 @@ const updateFilme = async function(filme){
 }
 
 //Função para excluir um filme existente
-const deleteFilme = async function(id){
+const deleteNacionalidade = async function(id){
     try {
-        let sql = `delete from tbl_filme where id = ${id}`
+        let sql = `delete from tbl_nacionalidade where id = ${id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
@@ -89,11 +77,11 @@ const deleteFilme = async function(id){
 }
 
 //Função para retornar todos os filmes existentes
-const selectAllFilme = async function(){
+const selectAllNacionalidade = async function(){
     
     try {
         //Script sql para retornar todos os dados
-        let sql = 'select * from tbl_filme order by id desc'
+        let sql = 'select * from tbl_nacionalidade order by id desc'
         
         //Executa o ScriptSQL no Banco de Dados e aguarda o retorno dos dados
         let result = await prisma.$queryRawUnsafe(sql)
@@ -109,9 +97,9 @@ const selectAllFilme = async function(){
 }
 
 //Função para buscar um filme pelo ID
-const selectByIdFilme = async function(id){
+const selectByIdNacionalidade = async function(id){
     try {
-        let sql = `select * from tbl_filme where id = ${id}`
+        let sql = `select * from tbl_nacionalidade where id = ${id}`
 
         let result = await prisma.$queryRawUnsafe(sql)
 
@@ -126,9 +114,9 @@ const selectByIdFilme = async function(id){
 }
 
 module.exports = {
-    insertFilme,
-    updateFilme,
-    deleteFilme,
-    selectAllFilme,
-    selectByIdFilme
+    insertNacionalidade,
+    updateNacionalidade,
+    deleteNacionalidade,
+    selectAllNacionalidade,
+    selectByIdNacionalidade
 }
