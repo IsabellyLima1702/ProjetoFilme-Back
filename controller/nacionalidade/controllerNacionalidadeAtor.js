@@ -9,25 +9,25 @@
 const message = require('../../modulo/config.js')
 
 //Import do aquivo para realizar o CRUD de dados no Banco de Dados
-const filmeGeneroDAO = require('../../model/DAO/filmeGenero.js')
+const nacionalidadeDAO = require('../../model/DAO/nacionalidade/nacionalidadeAtor.js')
 
 //Função para tratar a inserção de um novo genero no DAO
-const inserirFilmeGenero = async function(filmeGenero, contentType){
+const inserirNacionalidadeAtor = async function(nacionalidadeAtor, contentType){
     try {
         if(String(contentType).toLowerCase() == 'application/json')
         {
                 if (
-                    filmeGenero.id_filme              == ''           || filmeGenero.id_filme     == undefined    || filmeGenero.id_filme  == null || isNaN(filmeGenero.id_filme)  || filmeGenero.id_filme <=0 ||
-                    filmeGenero.id_genero             == ''           || filmeGenero.id_genero    == undefined    || filmeGenero.id_genero == null || isNaN(filmeGenero.id_genero) || filmeGenero.id_genero<=0
+                    nacionalidadeAtor.id_nacionalidade   == ''           || nacionalidadeAtor.id_nacionalidade    == undefined    || nacionalidadeAtor.id_nacionalidade  == null || isNaN(nacionalidadeAtor.id_nacionalidade)  || nacionalidadeAtor.id_nacionalidade <=0 ||
+                    nacionalidadeAtor.id_atores          == ''           || nacionalidadeAtor.id_atores           == undefined    || nacionalidadeAtor.id_atores         == null || isNaN(nacionalidadeAtor.id_atores)         || nacionalidadeAtor.id_atores        <=0
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
                 }else{
                     //Chama a função para inserir no BD e aguarda o retorno da função
-                    let resultgenero = await filmeGeneroDAO.insertFilmeGenero(filmeGenero)
+                    let resultNacionalidade = await nacionalidadeDAO.insertNacionalidadeAtor(nacionalidadeAtor)
 
-                    if(resultgenero)
-                        return message.SUCCESS_CREATED_ITEM //201
+                    if(resultNacionalidade)
+                        return message.SUCESS_CREATED_ITEM //201
                     else
                         return message.ERROR_INTERNAL_SERVER_MODEL //500
                 }
@@ -40,27 +40,27 @@ const inserirFilmeGenero = async function(filmeGenero, contentType){
 }
 
 //Função para tratar a atualização de um genero no DAO
-const atualizarFilmeGenero = async function(id, filmeGenero, contentType){
+const atualizarNacionalidadeAtor = async function(id, nacionalidadeAtor, contentType){
     try {
         if(String(contentType).toLowerCase() == 'application/json')
             {
-                if (id                                == ''           || id                       == undefined    || id                    == null || isNaN(id)  || id  <= 0   ||
-                    filmeGenero.id_filme              == ''           || filmeGenero.id_filme     == undefined    || filmeGenero.id_filme  == null || isNaN(filmeGenero.id_filme)  || filmeGenero.id_filme <=0 ||
-                    filmeGenero.id_genero             == ''           || filmeGenero.id_genero    == undefined    || filmeGenero.id_genero == null || isNaN(filmeGenero.id_genero) || filmeGenero.id_genero<=0
+                if (id                                == ''           || id                                   == undefined    || id                                  == null || isNaN(id)  || id  <= 0   ||
+                nacionalidadeAtor.id_nacionalidade    == ''           || nacionalidadeAtor.id_nacionalidade   == undefined    || nacionalidadeAtor.id_nacionalidade  == null || isNaN(nacionalidadeAtor.id_nacionalidade)  || nacionalidadeAtor.id_nacionalidade <=0 ||
+                nacionalidadeAtor.id_atores           == ''           || nacionalidadeAtor.id_atores          == undefined    || nacionalidadeAtor.id_atores         == null || isNaN(nacionalidadeAtor.id_atores)        || nacionalidadeAtor.id_atores        <=0
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
                 }else{
                     //Validação para verificar se o ID existe no BD
-                    let resultgenero = await filmeGeneroDAO.selectByIdFilmeGenero(parseInt(id))
+                    let resultAtor = await nacionalidadeDAO.selectByIdNacionalidadeAtor(parseInt(id))
 
-                    if(resultgenero != false || typeof(resultgenero) == 'object'){
-                        if(resultgenero.length > 0 ){
+                    if(resultAtor != false || typeof(resultAtor) == 'object'){
+                        if(resultAtor.length > 0 ){
                             //Update
                             //Adiciona o ID do genero no JSON com os dados
-                            genero.id = parseInt(id)
+                            ator.id = parseInt(id)
 
-                            let result = await filmeGeneroDAO.updateGenero(filmeGenero)
+                            let result = await nacionalidadeDAO.updateNacionalidadeAtor(nacionalidadeAtor)
 
                             if(result){
                                 return message.SUCESS_UPDATED_ITEM //200
@@ -83,20 +83,20 @@ const atualizarFilmeGenero = async function(id, filmeGenero, contentType){
 }
 
 //Função para tratar a exclusão de um genero no DAO
-const excluirFilmeGenero = async function(id){
+const excluirNacionalidadeAtor = async function(id){
     try {
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
 
             //Funcção que verifica se  ID existe no BD
-            let resultgenero = await filmeGeneroDAO.selectByIdFilmeGenero(parseInt(id))
+            let resultNacionalidade = await nacionalidadeDAO.selectByIdNacionalidadeAtor(parseInt(id))
 
-            if(resultgenero != false || typeof(resultgenero) == 'object'){
+            if(resultNacionalidade != false || typeof(resultNacionalidade) == 'object'){
                 //Se existir, faremos o delete
-                if(resultgenero.length > 0){
+                if(resultNacionalidade.length > 0){
                     //delete
-                    let result = await filmeGeneroDAO.deleteFilmeGenero(parseInt(id))
+                    let result = await nacionalidadeDAO.deleteNacionalidadeAtor(parseInt(id))
 
                     if(result){
                         return message.SUCESS_DELETED_ITEM //200
@@ -116,22 +116,22 @@ const excluirFilmeGenero = async function(id){
 }
 
 //Função para tratar o retorno de uma lista de generos do DAO
-const listarFilmeGenero = async function(){
+const listarNacionalidadeAtor = async function(){
     try {
         //Objeto do tipo JSON
-        let dadosgenero = {}
+        let dadosator = {}
         //Chama a função para retornar os generos cadastrados
-        let resultgenero = await filmeGeneroDAO.selectAllFilmeGenero()
+        let resultAtor = await nacionalidadeDAO.selectAllNacionalidadeAtor()
 
-        if(resultgenero != false || typeof(resultgenero) == 'object'){
-            if(resultgenero.length > 0){
+        if(resultAtor != false || typeof(resultAtor) == 'object'){
+            if(resultAtor.length > 0){
                 //Criando um JSON de retorno de dados para a API
-                dadosgenero.status = true
-                dadosgenero.status_code = 200
-                dadosgenero.items = resultgenero.length
-                dadosgenero.films = resultgenero
+                dadosator.status = true
+                dadosator.status_code = 200
+                dadosator.items = resultAtor.length
+                dadosator.films = resultAtor
 
-                return dadosgenero
+                return dadosator
             }else{
                 return message.ERROR_NOT_FOUND //404
             }
@@ -144,23 +144,23 @@ const listarFilmeGenero = async function(){
 }
 
 //Função para tratar o retorno de um genero filtrando pelo ID do DAO
-const buscarFilmeGenero = async function(id){
+const buscarNacionalidadeAtor = async function(id){
     try {
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
-            dadosgenero = {}
+            dadosator = {}
 
-            let resultgenero = await filmeGeneroDAO.selectByIdFilmeGenero(parseInt(id))
+            let resultAtor = await nacionalidadeDAO.selectByIdNacionalidadeAtor(parseInt(id))
             
-            if(resultgenero != false || typeof(resultgenero) == 'object'){
-                if(resultgenero.length > 0){
+            if(resultAtor != false || typeof(resultAtor) == 'object'){
+                if(resultAtor.length > 0){
                      //Criando um JSON de retorno de dados para a API
-                    dadosgenero.status = true
-                    dadosgenero.status_code = 200
-                    dadosgenero.genero = resultgenero
+                    dadosator.status = true
+                    dadosator.status_code = 200
+                    dadosator.ator = resultAtor
 
-                    return dadosgenero //200
+                    return dadosator //200
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
@@ -175,23 +175,23 @@ const buscarFilmeGenero = async function(id){
 }
 
 //Função para retornar os generos relacionados a um filme
-const buscarGeneroPorFilme = async function(idFilme){
+const buscarAtorPorNacionalidade = async function(idNacionalidade){
     try {
-        if(idFilme == '' || idFilme == undefined || idFilme == null || isNaN(idFilme) || idFilme <=0){
+        if(idNacionalidade == '' || idNacionalidade == undefined || idNacionalidade == null || isNaN(idNacionalidade) || idNacionalidade <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
-            dadosgenero = {}
+            dadosator = {}
 
-            let resultgenero = await filmeGeneroDAO.selectGeneroByIdFilme (parseInt(idFilme))
+            let resultNacionalidade = await nacionalidadeDAO.selectAtorByIdNacionalidade(parseInt(idNacionalidade))
             
-            if(resultgenero != false || typeof(resultgenero) == 'object'){
-                if(resultgenero.length > 0){
+            if(resultNacionalidade != false || typeof(resultNacionalidade) == 'object'){
+                if(resultNacionalidade.length > 0){
                      //Criando um JSON de retorno de dados para a API
-                    dadosgenero.status = true
-                    dadosgenero.status_code = 200
-                    dadosgenero.genero = resultgenero
+                    dadosator.status = true
+                    dadosator.status_code = 200
+                    dadosator.ator = resultNacionalidade
 
-                    return dadosgenero //200
+                    return dadosator //200
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
@@ -210,10 +210,10 @@ const buscarGeneroPorFilme = async function(idFilme){
 
 
 module.exports = {
-    inserirFilmeGenero,
-    atualizarFilmeGenero,
-    excluirFilmeGenero,
-    listarFilmeGenero,
-    buscarFilmeGenero,
-    buscarGeneroPorFilme
+    inserirNacionalidadeAtor,
+    atualizarNacionalidadeAtor,
+    excluirNacionalidadeAtor,
+    listarNacionalidadeAtor,
+    buscarNacionalidadeAtor,
+    buscarAtorPorNacionalidade
 } 

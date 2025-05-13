@@ -1,6 +1,6 @@
 /**************************************************************************************
  * Objetivo: Controller responsável pela regra de negócio referente ao CRUD de Filme
- * Data: 06/05/2025
+ * Data: 22/04/2025
  * Autor: Isabelly Lima
  * Versão: 1.0
  *************************************************************************************/
@@ -9,26 +9,27 @@
 const message = require('../../modulo/config.js')
 
 //Import do arquivo para realizar o CRUD de dados no Banco de dados
-const filmeDAO = require('../../model/DAO/avaliacao/avaliacao.js')
+const filmeDAO = require('../../model/DAO/diretor/diretor.js')
 
 //Função para tratar a inserção de um novo filme no DAO
 
-
-const inserirAvaliacao = async function (avaliacao, contentType){
+const inserirDiretor = async function(diretor, contentType){
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json')
         {
 
-            if (avaliacao.nota == '' || avaliacao.nota == undefined || avaliacao.nota == null || avaliacao.nota.length > 1
-                
+            if ( diretor.nome             == ''        || diretor.nome             == undefined || diretor.nome             == null ||diretor.nome.length              > 50  || 
+                 diretor.contato          == ''        || diretor.contato          == undefined || diretor.contato          == null || diretor.contato.length          > 30  ||  
+                 diretor.data_nascimento  == ''        || diretor.data_nascimento  == undefined || diretor.data_nascimento  == null || diretor.data_nascimento.length  > 20  ||  
+                 diretor.biografia        == ''        || diretor.biografia        == undefined || diretor.biografia        == null || diretor.biografia.length        > 300  
             )
             {
                 return message.ERROR_REQUIRED_FIELDS //400
             }else{
                 //Chama a função para inserir no banco de dados e aguarda o retorno da função
-                let resultAvaliacao = await filmeDAO.insertAvaliacao(avaliacao)
+                let resultDiretor = await filmeDAO.insertDiretor(diretor)
 
-                if(resultAvaliacao)
+                if(resultDiretor)
                     return message.SUCESS_CREATED_ITEM //201
                 else
                     return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -39,29 +40,34 @@ const inserirAvaliacao = async function (avaliacao, contentType){
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }  
+    
 }
 
-const atualizarAvaliacao = async function(id, avaliacao, contentType){
+const atualizarDiretor = async function(id, diretor, contentType){
     try {
         if(String(contentType).toLowerCase() == 'application/json')
             {
     
-                if (id             == ''  || id             == undefined || id            == null    || isNaN(id) ||       id <=0 ||              
-                    avaliacao.nota == ''  || avaliacao.nota == undefined || avaliacao.nota   == null || avaliacao.nota.length > 1
+                if (id                       == ''        || id                       == undefined || id                       == null || isNaN(id) ||                 id <=0   ||              
+                    diretor.nome             == ''        || diretor.nome             == undefined || diretor.nome             == null || diretor.nome.length             > 50  || 
+                    diretor.contato          == ''        || diretor.contato          == undefined || diretor.contato          == null || diretor.contato.length          > 30  ||  
+                    diretor.data_nascimento  == ''        || diretor.data_nascimento  == undefined || diretor.data_nascimento  == null || diretor.data_nascimento.length  > 20  ||  
+                    diretor.biografia        == ''        || diretor.biografia        == undefined || diretor.biografia        == null || diretor.biografia.length        > 300  
+
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
                 }else{
                     //Validação para verificar se o ID existe no Banco de Dados
-                    let resultAvaliacao = await filmeDAO.selectByIdAvaliacao(parseInt(id))
+                    let resultDiretor = await filmeDAO.selectByIdDiretor(parseInt(id))
 
-                    if(resultAvaliacao != false || typeof(resultAvaliacao) == 'object'){
-                        if(resultAvaliacao.length > 0){
+                    if(resultDiretor != false || typeof(resultDiretor) == 'object'){
+                        if(resultDiretor.length > 0){
                             //Update
                             //Adiciona o ID do filme no JSON com os dados
-                            avaliacao.id = parseInt(id)
+                            diretor.id = parseInt(id)
 
-                            let result = await filmeDAO.updateAvaliacao(avaliacao)
+                            let result = await filmeDAO.updateDiretor(diretor)
 
                             if(result){
                                 return message.SUCESS_UPDATED_ITEM //200
@@ -83,20 +89,20 @@ const atualizarAvaliacao = async function(id, avaliacao, contentType){
     }           
 }
 
-const excluirAvaliacao = async function(id){
+const excluirDiretor = async function(id){
     try {
        if(id == '' || id == undefined|| id == null || isNaN(id) || id <=0){
         return message.ERROR_REQUIRED_FIELDS //400
        }else{
 
             //Função que verifica se o ID existe no Banco de Dados
-            let resultAvaliacao = await filmeDAO.selectByIdAvaliacao(parseInt(id))
+            let resultDiretor = await filmeDAO.selectByIdDiretor(parseInt(id))
 
-            if(resultAvaliacao != false || typeof(resultAvaliacao) == 'object'){
+            if(resultDiretor != false || typeof(resultDiretor) == 'object'){
                 //Se existir, faremos o delete
-                if(resultAvaliacao.length > 0){
+                if(resultDiretor.length > 0){
                     //delete
-                    let result = await filmeDAO.deleteAvaliacao(parseInt(id))
+                    let result = await filmeDAO.deleteDiretor(parseInt(id))
 
                     if(result){
                         return message.SUCESS_DELETED_ITEM //200
@@ -115,22 +121,23 @@ const excluirAvaliacao = async function(id){
     }
 }
 
-const listarAvaliacao = async function(){
+//Função para tratar o retorno de uma lista de filmes do DAO
+const listarDiretor = async function(){
     try {
         //Objeto do tipo JSON
-        let dadosAvaliacao = {}
-        //Função para retornar os generos cadastrados
-        let resultAvaliacao = await filmeDAO.selectAllAvaliacao()
+        let dadosDiretor = {}
+        //Função para retornar os filmes cadastrados
+        let resultDiretor = await filmeDAO.selectAllDiretor()
 
-        if(resultAvaliacao != false || typeof(resultAvaliacao) == 'object'){
-            if(resultAvaliacao.length > 0){
+        if(resultDiretor != false || typeof(resultDiretor) == 'object'){
+            if(resultDiretor.length > 0){
                 //Criando um JSON de retorno de dados para a API
-                dadosAvaliacao.status = true
-                dadosAvaliacao.status_code = 200
-                dadosAvaliacao.items = resultAvaliacao.length
-                dadosAvaliacao.films = resultAvaliacao //verificar essa linha "films"
+                dadosDiretor.status = true
+                dadosDiretor.status_code = 200
+                dadosDiretor.items = resultDiretor.length
+                dadosDiretor.films = resultDiretor
 
-                return dadosAvaliacao
+                return dadosDiretor
             }else{
                 return message.ERROR_NOT_FOUND //404
             }
@@ -142,23 +149,23 @@ const listarAvaliacao = async function(){
     }
 }
 
-const buscarAvaliacao = async function(id){
+const buscarDiretor = async function(id){
     try {
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
-            dadosAvaliacao = {}
+            dadosDiretor = {}
 
-            let resultAvaliacao = await filmeDAO.selectByIdAvaliacao(parseInt(id))
-            console.log(resultAvaliacao)
-            if(resultAvaliacao != false || typeof(resultAvaliacao) == 'object'){
-                if(resultAvaliacao.length > 0){
+            let resultDiretor = await filmeDAO.selectByIdDiretor(parseInt(id))
+            console.log(resultDiretor)
+            if(resultDiretor != false || typeof(resultDiretor) == 'object'){
+                if(resultDiretor.length > 0){
                     //Criando um JSON de retorno de dados para a API
-                    dadosAvaliacao.status = true
-                    dadosAvaliacao.status_code = 200
-                    dadosAvaliacao.films = resultAvaliacao //verificar essa linha "films"
+                    dadosDiretor.status = true
+                    dadosDiretor.status_code = 200
+                    dadosDiretor.films = resultDiretor
 
-                    return dadosAvaliacao //200
+                    return dadosDiretor //200
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
@@ -167,14 +174,15 @@ const buscarAvaliacao = async function(id){
             }
         }
     } catch (error) {
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
 module.exports = {
-    inserirAvaliacao,
-    atualizarAvaliacao,
-    excluirAvaliacao,
-    listarAvaliacao,
-    buscarAvaliacao
+    inserirDiretor,
+    atualizarDiretor,
+    excluirDiretor,
+    listarDiretor,
+    buscarDiretor
 }
