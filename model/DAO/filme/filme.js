@@ -23,7 +23,9 @@ const insertFilme = async function(filme){
                                             sinopse,
                                             data_lancamento,
                                             foto_capa,
-                                            link_trailer
+                                            link_trailer,
+                                            id_classificacao,
+                                            id_idioma
                                         )
                                             values
                                         (
@@ -32,7 +34,9 @@ const insertFilme = async function(filme){
                                             '${filme.sinopse}',
                                             '${filme.data_lancamento}',
                                             '${filme.foto_capa}',
-                                            '${filme.link_trailer}'
+                                            '${filme.link_trailer}',
+                                            '${filme.id_classificacao}',
+                                            '${filme.id_idioma}'
                                             )`
         //O awai é fundamental para ter comunicação com o BD
         //executa o scriptSQL no Banco de Dados e aguarda o retorno do BD para saber se deu certo
@@ -52,12 +56,14 @@ const insertFilme = async function(filme){
 //Função para atualizar um filme existente
 const updateFilme = async function(filme){
     try {
-        let sql = `update tbl_filme set     nome            = '${filme.nome}',
-                                            duracao         = '${filme.duracao}',
-                                            sinopse         = '${filme.sinopse}',
-                                            data_lancamento = '${filme.data_lancamento}',
-                                            foto_capa       = '${filme.foto_capa}',
-                                            link_trailer    = '${filme.link_trailer}'
+        let sql = `update tbl_filme set     nome             = '${filme.nome}',
+                                            duracao          = '${filme.duracao}',
+                                            sinopse          = '${filme.sinopse}',
+                                            data_lancamento  = '${filme.data_lancamento}',
+                                            foto_capa        = '${filme.foto_capa}',
+                                            link_trailer     = '${filme.link_trailer}',
+                                            id_classificacao = '${filme.id_classificacao}',
+                                            id_idioma        = '${filme.id_idioma}'
                                 where id = ${filme.id}
                                 `
 

@@ -11,7 +11,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 //Função para inserir um novo FilmeGenero
-const insertFilmePremiacao = async function(FilmePremiacao){
+const insertFilmePremiacao = async function(filmePremiacao){
   try {
 
       let sql = `insert into tbl_filme_premiacoes  ( 
@@ -20,8 +20,8 @@ const insertFilmePremiacao = async function(FilmePremiacao){
                                         ) 
                                           values 
                                         (
-                                          ${FilmeGenero.id_filme},
-                                          ${FilmeGenero.id_premiacoes}
+                                          ${filmePremiacao.id_filme},
+                                          ${filmePremiacao.id_premiacoes}
                                         )`
       //console.log(sql)
 
@@ -40,12 +40,12 @@ const insertFilmePremiacao = async function(FilmePremiacao){
 }
 
 //Função para atualizar um FilmeGenero existente
-const updateFilmePremiacao = async function(FilmePremiacao){
+const updateFilmePremiacao = async function(filmePremiacao){
   try {
-      let sql = `update tbl_filme_premiacoes set    id_filme       = ${FilmePremiacao.id_filme},
-                                                    id_premiacoes  = ${FilmePremiacao.id_premiacoes}
+      let sql = `update tbl_filme_premiacoes set    id_filme       = ${filmePremiacao.id_filme},
+                                                    id_premiacoes  = ${filmePremiacao.id_premiacoes}
                                         
-                            where id = ${FilmePremiacao.id}                
+                            where id = ${filmePremiacao.id}                
                             `
       let resultFilmePremiacao = await prisma.$executeRawUnsafe(sql)
 
@@ -118,7 +118,7 @@ const selectFilmeByIdPremiacoes = async function(idPremiacoes){
                                               on tbl_filme.id = tbl_filme_premiacoes.id_filme
                                             inner join tbl_premiacoes
                                               on tbl_premiacoes.id = tbl_filme_premiacoes.id_premiacoes
-                  where tbl_filme_premiacoes.id_premiacoes = ${idGenero}`
+                  where tbl_filme_premiacoes.id_premiacoes = ${idPremiacoes}`
 
       let result = await prisma.$queryRawUnsafe(sql)
 
@@ -132,14 +132,14 @@ const selectFilmeByIdPremiacoes = async function(idPremiacoes){
 }
 
 //Função para retornar os generos pelo Filme
-const selectPremiacaoByIdFilme = async function(idFilme){
+const selectPremiacaoByIdFilme = async function(idPremiacao){
  try {
       let sql = `select tbl_premiacoes.* from tbl_filme 
                                             inner join tbl_filme_premiacoes
                                               on tbl_filme.id = tbl_filme_premiacoes.id_filme
                                             inner join tbl_premiacoes
                                               on tbl_premiacoes.id = tbl_filme_premiacoes.id_premiacoes
-                  where tbl_filme_premiacoes.id_filme = ${idFilme}`
+                  where tbl_filme_premiacoes.id_filme = ${idPremiacao}`
                   
       let result = await prisma.$queryRawUnsafe(sql)
 

@@ -11,6 +11,8 @@ const message = require('../../modulo/config.js')
 //Import do arquivo para realizar o CRUD de dados no Banco de dados
 const filmeDAO = require('../../model/DAO/premiacao/premiacao.js')
 
+const controllerCategorias = require('../categorias/controllerCategorias.js')
+
 //Função para tratar a inserção de um novo filme no DAO
 
 const inserirPremiacao = async function(premiacao, contentType){
@@ -19,7 +21,7 @@ const inserirPremiacao = async function(premiacao, contentType){
         {
 
             if (premiacao.nome            == ''        || premiacao.nome           == undefined || premiacao.nome            == null || premiacao.nome.length            > 45 || 
-                premiacao.nacionalidade   == ''        || premiacao.nacionalidade  == undefined || premiacao.nacionalidade   == null || premiacao.nacionalidade.length   > 15  
+                premiacao.id_categorias   == ''        || premiacao.id_categorias  == undefined
             )
             {
                 return message.ERROR_REQUIRED_FIELDS //400
@@ -48,7 +50,7 @@ const atualizarPremiacao = async function(id, premiacao, contentType){
     
                 if (id                        == ''        || id                       == undefined || id                        == null || isNaN(id) ||                  id <=0  ||              
                     premiacao.nome            == ''        || premiacao.nome           == undefined || premiacao.nome            == null || premiacao.nome.length            > 45 || 
-                    premiacao.nacionalidade   == ''        || premiacao.nacionalidade  == undefined || premiacao.nacionalidade   == null || premiacao.nacionalidade.length   > 15  
+                    premiacao.id_categorias   == ''        || premiacao.id_categorias  == undefined 
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
@@ -119,6 +121,9 @@ const excluirPremiacao = async function(id){
 //Função para tratar o retorno de uma lista de filmes do DAO
 const listarPremiacao = async function(){
     try {
+
+        let arrayPremiacao = []
+    
         //Objeto do tipo JSON
         let dadosPremiacao = {}
         //Função para retornar os filmes cadastrados
@@ -130,7 +135,17 @@ const listarPremiacao = async function(){
                 dadosPremiacao.status = true
                 dadosPremiacao.status_code = 200
                 dadosPremiacao.items = resultPremiacao.length
-                dadosPremiacao.films = resultPremiacao
+
+                for(const itemPremiacao of resultPremiacao){
+                    let dadosCategorias = await controllerCategorias.buscarCategorias(itemPremiacao.id_categorias)
+
+                    itemPremiacao.categorias = dadosCategorias.categorias
+
+                    //delete itemPremiacao.id_categorias
+
+                    arrayPremiacao.push(itemPremiacao)
+                }
+                dadosPremiacao.films = arrayPremiacao
 
                 return dadosPremiacao
             }else{
@@ -146,6 +161,9 @@ const listarPremiacao = async function(){
 
 const buscarPremiacao = async function(id){
     try {
+ 
+        let arrayPremiacao = []
+
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
@@ -158,7 +176,17 @@ const buscarPremiacao = async function(id){
                     //Criando um JSON de retorno de dados para a API
                     dadosPremiacao.status = true
                     dadosPremiacao.status_code = 200
-                    dadosPremiacao.films = resultPremiacao
+
+                    for(const itemPremiacao of resultPremiacao){
+                    let dadosCategorias = await controllerCategorias.buscarCategorias(itemPremiacao.id_categorias)
+
+                    itemPremiacao.categorias = dadosCategorias.categorias
+
+                    //delete itemPremiacao.id_categorias
+
+                    arrayPremiacao.push(itemPremiacao)
+                }
+                dadosPremiacao.films = arrayPremiacao
 
                     return dadosPremiacao //200
                 }else{

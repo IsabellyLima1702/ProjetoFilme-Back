@@ -6,23 +6,22 @@
  ******************************************************************************************************/
 //import da biblioteca do prisma client para executar os scripts SQL
 const { PrismaClient } = require('@prisma/client')
-const { insertNacionalidadeDiretor } = require('../filmeDiretor')
 
 //Instancia (criar um objeto a ser utilizado) a biblioteca do prisma/client
 const prisma = new PrismaClient()
 
 //Função para inserir um novo FilmeGenero
-const insertNacionalidadeDiretor = async function(nacionalidadeDiretor){
+const insertNacionalidadeAtor = async function(nacionalidadeAtor){
   try {
 
-      let sql = `insert into tbl_nacionalidade_diretor  ( 
+      let sql = `insert into tbl_nacionalidade_atores  ( 
                                           id_nacionalidade,
-                                          id_diretor
+                                          id_atores
                                         ) 
                                           values 
                                         (
-                                          ${nacionalidadeDiretor.id_nacionalidade},
-                                          ${nacionalidadeDiretor.id_diretor}
+                                          ${nacionalidadeAtor.id_nacionalidade},
+                                          ${nacionalidadeAtor.id_atores}
                                         )`
       //console.log(sql)
 
@@ -41,16 +40,16 @@ const insertNacionalidadeDiretor = async function(nacionalidadeDiretor){
 }
 
 //Função para atualizar um FilmeGenero existente
-const updateNacionalidadeDiretor = async function(nacionalidadeDiretor){
+const updateNacionalidadeAtor = async function(nacionalidadeAtor){
   try {
-      let sql = `update tbl_nacionalidade_diretor set     id_nacionalidade      = ${nacionalidadeDiretor.id_nacionalidade},
-                                                 id_diretor     = ${filmeDiretor.id_diretor}
+      let sql = `update tbl_nacionalidade_atores set    id_nacionalidade   = ${nacionalidadeAtor.id_nacionalidade},
+                                                        id_atores          = ${nacionalidadeAtor.id_atores}
                                         
-                            where id = ${nacionalidadeDiretor.id}                
+                            where id = ${nacionalidadeAtor.id}                
                             `
-      let resultFilmeDiretor = await prisma.$executeRawUnsafe(sql)
+      let resultNacionalidadeAtor = await prisma.$executeRawUnsafe(sql)
 
-      if(resultFilmeDiretor)
+      if(resultNacionalidadeAtor)
         return true
       else
         return false
@@ -60,9 +59,9 @@ const updateNacionalidadeDiretor = async function(nacionalidadeDiretor){
 }
 
 //Função para excluir um FilmeGenero existente
-const deleteNacionalidadeDiretor = async function(id){
+const deleteNacionalidadeAtor = async function(id){
   try {
-    let sql = `delete from tbl_nacionalidade_diretor where id = ${id}`
+    let sql = `delete from tbl_nacionalidade_atores where id = ${id}`
 
     let result = await prisma.$executeRawUnsafe(sql)
 
@@ -76,11 +75,11 @@ const deleteNacionalidadeDiretor = async function(id){
 }
 
 //Função para retornar todos os FilmeGeneros existentes
-const selectAllNacionalidadeDiretor = async function(){
+const selectAllNacionalidadeAtor = async function(){
 
     try {
       //ScriptSQL para retornar todos os dados
-      let sql = 'select * from tbl_nacionalidade_diretor order by id desc'
+      let sql = 'select * from tbl_nacionalidade_atores order by id desc'
 
       //Executa o scriptSQL no BD e aguarda o retorno dos dados
       let result = await prisma.$queryRawUnsafe(sql)
@@ -96,9 +95,9 @@ const selectAllNacionalidadeDiretor = async function(){
 }
 
 //Função para buscar um FilmeGenero pelo ID
-const selectByIdNacionalidadeDiretor = async function(id){
+const selectByIdNacionalidadeAtor = async function(id){
   try {
-    let sql = `select * from tbl_nacionalidade_diretor where id = ${id}`
+    let sql = `select * from tbl_nacionalidade_atores where id = ${id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 
@@ -112,14 +111,14 @@ const selectByIdNacionalidadeDiretor = async function(id){
 }
 
 //Função para retornar os filmes pelo genero
-const selectNacionalidadeByIdDiretor = async function(idDiretor){
+const selectNacionalidadeByIdAtor = async function(idAtor){
   try {
       let sql = `select tbl_nacionalidade.* from tbl_nacionalidade
-                                            inner join tbl_nacionalidade_diretor
-                                              on tbl_nacionalidade.id = tbl_nacionalidade_diretor.id_nacionalidade
-                                            inner join tbl_diretor
-                                              on tbl_diretor.id = tbl_nacionalidade_diretor.id_diretor
-                  where tbl_nacionalidade_diretor.id_diretor = ${idDiretor}`
+                                            inner join tbl_nacionalidade_atores
+                                              on tbl_nacionalidade.id = tbl_nacionalidade_atores.id_nacionalidade
+                                            inner join tbl_atores
+                                              on tbl_atores.id = tbl_nacionalidade_atores.id_atores
+                  where tbl_nacionalidade_atores.id_atores = ${idAtor}`
 
       let result = await prisma.$queryRawUnsafe(sql)
 
@@ -133,14 +132,14 @@ const selectNacionalidadeByIdDiretor = async function(idDiretor){
 }
 
 //Função para retornar os generos pelo Filme
-const selectDiretorByIdNacionalidade = async function(idNacionalidade){
+const selectAtorByIdNacionalidade = async function(idNacionalidade){
  try { //verificar se é certo esse ponto antes do *
-      let sql = `select tbl_diretor.* from tbl_nacionalidade 
-                                            inner join tbl_nacionalidade_diretor
-                                              on tbl_nacionalidade.id = tbl_nacionalidade_diretor.id_nacionalidade
-                                            inner join tbl_diretor
-                                              on tbl_diretor.id = tbl_nacionalidade_diretor.id_diretor
-                  where tbl_nacionalidade_diretor.id_nacionalidade = ${idNacionalidade}`
+      let sql = `select tbl_atores.* from tbl_nacionalidade 
+                                            inner join tbl_nacionalidade_atores
+                                              on tbl_atores.id = tbl_nacionalidade_atores.id_nacionalidade
+                                            inner join tbl_ator
+                                              on tbl_atores.id = tbl_nacionalidade_atores.id_atores
+                  where tbl_nacionalidade_atores.id_nacionalidade = ${idNacionalidade}`
                   
       let result = await prisma.$queryRawUnsafe(sql)
 
@@ -155,11 +154,11 @@ const selectDiretorByIdNacionalidade = async function(idNacionalidade){
 
 
 module.exports = {
-    insertNacionalidadeDiretor,
-    updateNacionalidadeDiretor,
-    deleteNacionalidadeDiretor,
-    selectAllNacionalidadeDiretor,
-    selectByIdNacionalidadeDiretor,
-    selectNacionalidadeByIdDiretor,
-    selectDiretorByIdNacionalidade
+    insertNacionalidadeAtor,
+    updateNacionalidadeAtor,
+    deleteNacionalidadeAtor,
+    selectAllNacionalidadeAtor,
+    selectByIdNacionalidadeAtor,
+    selectNacionalidadeByIdAtor,
+    selectAtorByIdNacionalidade
 } 

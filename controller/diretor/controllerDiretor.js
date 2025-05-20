@@ -10,6 +10,7 @@ const message = require('../../modulo/config.js')
 
 //Import do arquivo para realizar o CRUD de dados no Banco de dados
 const filmeDAO = require('../../model/DAO/diretor/diretor.js')
+const controllerSexo = require('../sexo/controllerSexo.js')
 
 //Função para tratar a inserção de um novo filme no DAO
 
@@ -21,7 +22,8 @@ const inserirDiretor = async function(diretor, contentType){
             if ( diretor.nome             == ''        || diretor.nome             == undefined || diretor.nome             == null ||diretor.nome.length              > 50  || 
                  diretor.contato          == ''        || diretor.contato          == undefined || diretor.contato          == null || diretor.contato.length          > 30  ||  
                  diretor.data_nascimento  == ''        || diretor.data_nascimento  == undefined || diretor.data_nascimento  == null || diretor.data_nascimento.length  > 20  ||  
-                 diretor.biografia        == ''        || diretor.biografia        == undefined || diretor.biografia        == null || diretor.biografia.length        > 300  
+                 diretor.biografia        == ''        || diretor.biografia        == undefined || diretor.biografia        == null || diretor.biografia.length        > 300 ||
+                 diretor.id_sexo          == ''        || diretor.id_sexo          == undefined 
             )
             {
                 return message.ERROR_REQUIRED_FIELDS //400
@@ -52,7 +54,8 @@ const atualizarDiretor = async function(id, diretor, contentType){
                     diretor.nome             == ''        || diretor.nome             == undefined || diretor.nome             == null || diretor.nome.length             > 50  || 
                     diretor.contato          == ''        || diretor.contato          == undefined || diretor.contato          == null || diretor.contato.length          > 30  ||  
                     diretor.data_nascimento  == ''        || diretor.data_nascimento  == undefined || diretor.data_nascimento  == null || diretor.data_nascimento.length  > 20  ||  
-                    diretor.biografia        == ''        || diretor.biografia        == undefined || diretor.biografia        == null || diretor.biografia.length        > 300  
+                    diretor.biografia        == ''        || diretor.biografia        == undefined || diretor.biografia        == null || diretor.biografia.length        > 300 ||
+                    diretor.id_sexo          == ''        || diretor.id_sexo          == undefined
 
                 )
                 {
@@ -124,6 +127,8 @@ const excluirDiretor = async function(id){
 //Função para tratar o retorno de uma lista de filmes do DAO
 const listarDiretor = async function(){
     try {
+
+        let arrayDiretor = []
         //Objeto do tipo JSON
         let dadosDiretor = {}
         //Função para retornar os filmes cadastrados
@@ -135,7 +140,17 @@ const listarDiretor = async function(){
                 dadosDiretor.status = true
                 dadosDiretor.status_code = 200
                 dadosDiretor.items = resultDiretor.length
-                dadosDiretor.films = resultDiretor
+
+                for(const itemDiretor of resultDiretor){
+                    let dadosSexo = await controllerSexo.buscarSexo(itemDiretor.id_sexo)
+
+                    itemDiretor.sexo = dadosSexo.sexo
+
+                    delete itemDiretor.id_sexo
+
+                    arrayDiretor.push(itemDiretor)
+                }
+                dadosDiretor.films = arrayDiretor
 
                 return dadosDiretor
             }else{
@@ -151,6 +166,9 @@ const listarDiretor = async function(){
 
 const buscarDiretor = async function(id){
     try {
+
+        let arrayDiretor = []
+
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
@@ -163,7 +181,17 @@ const buscarDiretor = async function(id){
                     //Criando um JSON de retorno de dados para a API
                     dadosDiretor.status = true
                     dadosDiretor.status_code = 200
-                    dadosDiretor.films = resultDiretor
+                    
+                    for(const itemDiretor of resultDiretor){
+                    let dadosSexo = await controllerSexo.buscarSexo(itemDiretor.id_sexo)
+
+                    itemDiretor.sexo = dadosSexo.sexo
+
+                    delete itemDiretor.id_sexo
+
+                    arrayDiretor.push(itemDiretor)
+                }
+                dadosDiretor.films = arrayDiretor
 
                     return dadosDiretor //200
                 }else{

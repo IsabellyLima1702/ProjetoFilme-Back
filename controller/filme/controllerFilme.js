@@ -156,14 +156,13 @@ const listarFilme = async function(){
 
                 for(const itemFilme of resultFilme){
                     let dadosClassificacao = await controllerClassificacao.buscarClassificacao(itemFilme.id_classificacao)
-                    let dadosIdioma        = await controllerIdiomas.buscarIdioma(itemFilme.id_idioma)
-                
+                    let dadosIdioma        = await controllerIdiomas.buscarIdioma(itemFilme.id_idioma) 
+                    
+                    //delete itemFilme.id_classificacao
+                    //delete itemFilme.id_idioma
 
                     itemFilme.classificacao = dadosClassificacao.classificacao
-                    itemFilme.idioma        = dadosIdioma.idioma
-
-                    delete itemFilme.id_classificacao
-                    delete itemFilme.id_idioma
+                    itemFilme.idioma       = dadosIdioma.idioma
             
                     arrayFilmes.push(itemFilme)
                 }
@@ -207,8 +206,8 @@ const buscarFilme = async function(id){
                         itemFilme.classificacao = dadosClassificacao.classificacao
                         itemFilme.idioma = dadosIdioma.idioma
     
-                        delete itemFilme.id_classificacao
-                        delete itemFilme.id_idioma
+                        //delete itemFilme.id_classificacao
+                        //delete itemFilme.id_idioma
     
                         arrayFilmes.push(itemFilme)
                     }

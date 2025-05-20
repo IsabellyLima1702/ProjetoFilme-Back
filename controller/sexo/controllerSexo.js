@@ -46,7 +46,7 @@ const atualizarSexo = async function(id, sexo, contentType){
         if(String(contentType).toLowerCase() == 'application/json')
             {
     
-                if (id               == ''        || id             == undefined || id               == null || isNaN(id) ||           id <=0  ||              
+                if (id               == ''        || id             == undefined || id               == null || isNaN(id) ||           id  <=0 ||              
                     sexo.masculino   == ''        || sexo.masculino == undefined || sexo.masculino   == null || sexo.masculino.length      > 9 || 
                     sexo.feminino    == ''        || sexo.feminino  == undefined || sexo.feminino    == null || sexo.feminino.length       > 8 
                 )

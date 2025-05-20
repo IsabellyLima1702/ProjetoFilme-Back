@@ -10,6 +10,7 @@ const message = require('../../modulo/config.js')
 
 //Import do arquivo para realizar o CRUD de dados no Banco de dados
 const filmeDAO = require('../../model/DAO/ator/ator.js')
+const controllerSexo = require('../sexo/controllerSexo.js')
 
 //Função para tratar a inserção de um novo filme no DAO
 
@@ -21,7 +22,8 @@ const inserirAtor = async function(ator, contentType){
             if (ator.nome                 == ''        || ator.nome               == undefined || ator.nome                   == null || ator.nome.length            > 50 || 
                 ator.contato              == ''        || ator.contato            == undefined || ator.contato                == null || ator.contato.length         > 30 ||
                 ator.data_nascimento      == ''        || ator.data_nascimento    == undefined || ator.data_nascimento        == null || ator.data_nascimento.length > 20 ||
-                ator.biografia            == ''        || ator.biografia          == undefined || ator.biografia              == null || ator.biografia.length       > 300 
+                ator.biografia            == ''        || ator.biografia          == undefined || ator.biografia              == null || ator.biografia.length       > 300||
+                ator.id_sexo              == ''        || ator.id_sexo            == undefined
 
             )
             {
@@ -53,7 +55,8 @@ const atualizarAtor = async function(id, ator, contentType){
                     categorias.nome       == ''        || categorias.nome       == undefined || categorias.nome       == null || categorias.nome.length      > 50 || 
                     ator.contato          == ''        || ator.contato          == undefined || ator.contato          == null || ator.contato.length         > 30 ||
                     ator.data_nascimento  == ''        || ator.data_nascimento  == undefined || ator.data_nascimento  == null || ator.data_nascimento.length > 20 ||
-                    ator.biografia        == ''        || ator.biografia        == undefined || ator.biografia        == null || ator.biografia.length       > 300 
+                    ator.biografia        == ''        || ator.biografia        == undefined || ator.biografia        == null || ator.biografia.length       > 300||
+                    ator.id_sexo          == ''        || ator.id_sexo          == undefined 
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
@@ -124,6 +127,9 @@ const excluirAtor = async function(id){
 //Função para tratar o retorno de uma lista de filmes do DAO
 const listarAtor = async function(){
     try {
+
+        let arrayAtor = []
+
         //Objeto do tipo JSON
         let dadosAtor = {}
         //Função para retornar os filmes cadastrados
@@ -135,7 +141,18 @@ const listarAtor = async function(){
                 dadosAtor.status = true
                 dadosAtor.status_code = 200
                 dadosAtor.items = resultAtor.length
-                dadosAtor.films = resultAtor
+                
+                for(const itemAtor of resultAtor){
+                    let dadosSexo = await controllerSexo.buscarSexo(itemAtor.id_sexo)
+
+                    itemAtor.sexo = dadosSexo.sexo
+
+                    delete itemAtor.id_sexo
+
+                    arrayAtor.push(itemAtor)
+                }
+
+                dadosAtor.films = arrayAtor
 
                 return dadosAtor
             }else{
@@ -151,6 +168,9 @@ const listarAtor = async function(){
 
 const buscarAtor = async function(id){
     try {
+
+        let arrayAtor = []
+
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
@@ -163,8 +183,20 @@ const buscarAtor = async function(id){
                     //Criando um JSON de retorno de dados para a API
                     dadosAtor.status = true
                     dadosAtor.status_code = 200
-                    dadosAtor.films = resultAtor
 
+                    for(const itemAtor of resultAtor){
+                    let dadosSexo = await controllerSexo.buscarSexo(itemAtor.id_sexo)
+
+                    itemAtor.sexo = dadosSexo.sexo
+
+                    delete itemAtor.id_sexo
+
+                    arrayAtor.push(itemAtor)
+                }
+
+                dadosAtor.films = arrayAtor
+
+                    
                     return dadosAtor //200
                 }else{
                     return message.ERROR_NOT_FOUND //404

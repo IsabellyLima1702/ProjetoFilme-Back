@@ -6,7 +6,7 @@
  ***************************************************************************************/
 //Import da biblioteca do prisma client para executar os scripts SQL
 const{ PrismaClient } = require('@prisma/client')
-const e = require('express')
+
 
 //Instancia (criar um objeto a ser utilizado) a biblioteca do prisma/client
  const  prisma = new PrismaClient()

@@ -18,12 +18,12 @@ const insertPremiacao = async function(premiacao){
     try {
 
         let sql = `insert into tbl_premiacoes  ( nome,
-                                                nacionalidade
+                                                 id_categorias
                                         )
                                             values
                                         (
                                             '${premiacao.nome}',
-                                            '${premiacao.nacionalidade}'
+                                            '${premiacao.id_categorias}'
                                             )`
         //O awai é fundamental para ter comunicação com o BD
         //executa o scriptSQL no Banco de Dados e aguarda o retorno do BD para saber se deu certo
@@ -42,8 +42,8 @@ const insertPremiacao = async function(premiacao){
 
 const updatePremiacao = async function(premiacao){
     try {
-        let sql = `update tbl_premiacoes set nome = '${premiacao.nome}',
-                                             nacionalidade = '${premiacao.nacionalidade}'
+        let sql = `update tbl_premiacoes set nome          = '${premiacao.nome}',
+                                             id_categorias = '${premiacao.id_categorias}'
                                                     
 
                                 where id = ${premiacao.id}

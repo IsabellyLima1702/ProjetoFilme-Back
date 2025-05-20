@@ -10,6 +10,7 @@ const message = require('../../modulo/config.js')
 
 //Import do arquivo para realizar o CRUD de dados no Banco de dados
 const filmeDAO = require('../../model/DAO/avaliacao/avaliacao.js')
+const controllerFilme = require('../filme/controllerFilme.js')
 
 //Função para tratar a inserção de um novo filme no DAO
 
@@ -19,7 +20,8 @@ const inserirAvaliacao = async function (avaliacao, contentType){
         if(String(contentType).toLocaleLowerCase() == 'application/json')
         {
 
-            if (avaliacao.nota == '' || avaliacao.nota == undefined || avaliacao.nota == null || avaliacao.nota.length > 1
+            if (avaliacao.nota     == '' || avaliacao.nota     == undefined || avaliacao.nota == null || avaliacao.nota.length > 1 ||
+                avaliacao.id_filme == '' || avaliacao.id_filme == undefined
                 
             )
             {
@@ -46,8 +48,9 @@ const atualizarAvaliacao = async function(id, avaliacao, contentType){
         if(String(contentType).toLowerCase() == 'application/json')
             {
     
-                if (id             == ''  || id             == undefined || id            == null    || isNaN(id) ||       id <=0 ||              
-                    avaliacao.nota == ''  || avaliacao.nota == undefined || avaliacao.nota   == null || avaliacao.nota.length > 1
+                if (id                 == ''|| id                 == undefined || id               == null    || isNaN(id) ||    id <=0 ||              
+                    avaliacao.nota     == ''|| avaliacao.nota     == undefined || avaliacao.nota   == null || avaliacao.nota.length > 1 ||
+                    avaliacao.id_filme == ''|| avaliacao.id_filme == undefined
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400
@@ -117,6 +120,8 @@ const excluirAvaliacao = async function(id){
 
 const listarAvaliacao = async function(){
     try {
+
+        let arrayAvaliacoes = []
         //Objeto do tipo JSON
         let dadosAvaliacao = {}
         //Função para retornar os generos cadastrados
@@ -128,7 +133,18 @@ const listarAvaliacao = async function(){
                 dadosAvaliacao.status = true
                 dadosAvaliacao.status_code = 200
                 dadosAvaliacao.items = resultAvaliacao.length
-                dadosAvaliacao.films = resultAvaliacao //verificar essa linha "films"
+
+                for(const itemAvaliacao of resultAvaliacao){
+                    let dadosFilme = await controllerFilme.buscarFilme(itemAvaliacao.id_filme)
+
+                    itemAvaliacao.filme = dadosFilme.filme
+
+                    //delete itemAvaliacao.id_filme
+
+                    arrayAvaliacoes.push(itemAvaliacao)
+                }
+
+                dadosAvaliacao.films = arrayAvaliacoes //verificar essa linha "films"
 
                 return dadosAvaliacao
             }else{
@@ -144,6 +160,9 @@ const listarAvaliacao = async function(){
 
 const buscarAvaliacao = async function(id){
     try {
+
+        let arrayAvaliacoes = []
+
         if(id == '' || id == undefined || id == null || isNaN(id) || id <=0){
             return message.ERROR_REQUIRED_FIELDS //400
         }else{
@@ -156,7 +175,18 @@ const buscarAvaliacao = async function(id){
                     //Criando um JSON de retorno de dados para a API
                     dadosAvaliacao.status = true
                     dadosAvaliacao.status_code = 200
-                    dadosAvaliacao.films = resultAvaliacao //verificar essa linha "films"
+
+                     for(const itemAvaliacao of resultAvaliacao){
+                    let dadosFilme = await controllerFilme.buscarFilme(itemAvaliacao.id_filme)
+
+                    itemAvaliacao.filme = dadosFilme.filme
+
+                    delete itemAvaliacao.id_filme
+
+                    arrayAvaliacoes.push(itemAvaliacao)
+                }
+
+                dadosAvaliacao.films = arrayAvaliacoes
 
                     return dadosAvaliacao //200
                 }else{

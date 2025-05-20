@@ -6,22 +6,25 @@
  ***************************************************************************************/
 //Import da biblioteca do prisma client para executar os scripts SQL
 const{ PrismaClient } = require('@prisma/client')
-const { selectByIdAvaliacao } = require('../avaliacao/')
 
 //Instancia (criar um objeto a ser utilizado) a biblioteca do prisma/client
  const  prisma = new PrismaClient()
 
 //CADA FUNÇÃO REPRESENTA UMA AÇÃO NO BANCO
 
-const insertAvaliacao = async function(avaliacao){
+const insertAvaliacao= async function(avaliacao){
+    //O trycach é necessário para mostrar mensagem de erro ao usuário e não no terminal do desenvolvedor
+    //com o console abaixo do (error), o erro aparece tanto para o usuário quanto para o desenvolvedor
     try {
 
-        let sql = `insert into tbl_avaliacao  ( nota
+        let sql = `insert into tbl_avaliacao  ( nota,
+                                                id_filme
                                         )
-                                        values
+                                            values
                                         (
-                                         '${avaliacao.nota}'
-                                        )`
+                                            '${avaliacao.nota}',
+                                            '${avaliacao.id_filme}'
+                                            )`
         //O awai é fundamental para ter comunicação com o BD
         //executa o scriptSQL no Banco de Dados e aguarda o retorno do BD para saber se deu certo
         let result = await prisma.$executeRawUnsafe(sql)
@@ -34,11 +37,14 @@ const insertAvaliacao = async function(avaliacao){
     } catch (error) {
         return false
     }
+
 }
 
 const updateAvaliacao = async function(avaliacao){
     try {
-        let sql = `update tbl_avaliacao set nome = '${avaliacao.nota}' 
+        let sql = `update tbl_avaliacao set nota = '${avaliacao.nota}',
+                                             id_filme = '${avaliacao.id_filme}'
+                                                    
 
                                 where id = ${avaliacao.id}
                                 `
@@ -50,11 +56,12 @@ const updateAvaliacao = async function(avaliacao){
         else
           return false
     } catch (error) {
+        console.log(error)
         return false
     }
 }
 
-const deleteAvaliacao = async function(id){ //Conferir o nome da tabela no workbench
+const deleteAvaliacao = async function(id){
     try {
         let sql = `delete from tbl_avaliacao where id = ${id}`
 
